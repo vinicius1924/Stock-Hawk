@@ -213,7 +213,9 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 	@Override
 	public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture)
 	{
-
+		// un-highlight values after the gesture is finished and no single-tap
+		if(lastPerformedGesture != ChartTouchListener.ChartGesture.SINGLE_TAP)
+			mChart.highlightValues(null); // or highlightTouch(null) for callback to onNothingSelected(...)
 	}
 
 	@Override
