@@ -7,7 +7,7 @@
     <color name="material_blue_500">#2196F3</color>
     <color name="material_red_700">#D50000</color>
     <color name="material_green_700">#00C853</color>
-    <color name="material_blue_A100">#80D8FF</color>
-    <color name="material_red_500">#F44336</color>
+    <color name="material_grey_850">#ff303030</color>
+    <color name="material_grey_600">#ff757575</color>
 
 </resources>

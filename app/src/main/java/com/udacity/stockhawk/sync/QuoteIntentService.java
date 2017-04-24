@@ -3,8 +3,6 @@ package com.udacity.stockhawk.sync;
 import android.app.IntentService;
 import android.content.Intent;
 
-import timber.log.Timber;
-
 
 public class QuoteIntentService extends IntentService {
 

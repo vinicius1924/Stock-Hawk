@@ -7,11 +7,13 @@ import android.app.LoaderManager;
 import android.content.Loader;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -38,10 +40,12 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 {
 	@BindView(R.id.chart)
 	LineChart mChart;
+	@BindView(R.id.toolbarTitle)
+	TextView toolbarTitle;
+	@BindView(R.id.toolbar)
+	Toolbar toolbar;
 	private Uri stockUri;
 	private XAxis xAxis;
-
-	private final String TAG = getClass().getSimpleName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -55,6 +59,17 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 			stockUri = getIntent().getData();
 			getLoaderManager().initLoader(0, null, this);
 		}
+
+		/*
+		 * Faz com que uma toolbar seja a actionbar da activity
+	    */
+		setSupportActionBar(toolbar);
+
+		/* Remove o nome do app da toolbar */
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+		/* Mostra o back button no toolbar */
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		mChart.setOnChartGestureListener(this);
 		mChart.setOnChartValueSelectedListener(this);
@@ -96,6 +111,20 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 		xAxis.setDrawGridLines(true);
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch(item.getItemId())
+		{
+			/* Este é o id do back button */
+			case android.R.id.home:
+				onBackPressed();
+				return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
 	public int getColorOfAttribute(int attribute)
 	{
 		/* pega o valor do atributo passado como parametro */
@@ -110,7 +139,7 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args)
 	{
-		String[] mProjection = {Contract.Quote.COLUMN_HISTORY};
+		String[] mProjection = {Contract.Quote.COLUMN_NAME, Contract.Quote.COLUMN_HISTORY};
 
 		return new CursorLoader(this,
 				  stockUri,
@@ -127,8 +156,8 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 
 		if(cursor.moveToFirst())
 		{
+			toolbarTitle.setText(cursor.getString(cursor.getColumnIndex(Contract.Quote.COLUMN_NAME)));
 			String history = cursor.getString(cursor.getColumnIndex(Contract.Quote.COLUMN_HISTORY));
-			//Log.d(TAG, history);
 
 			String historyInWeeks[] = history.split("\\r?\\n");
 
@@ -144,8 +173,8 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 
 			LineDataSet setStockQuotes = new LineDataSet(values, "Stock Quotes");
 
-			setStockQuotes.setColor(ContextCompat.getColor(this, R.color.material_blue_A100));
-			setStockQuotes.setCircleColor(ContextCompat.getColor(this, R.color.material_red_500));
+			setStockQuotes.setColor(Color.WHITE);
+			setStockQuotes.setCircleColor(Color.WHITE);
 			setStockQuotes.setLineWidth(1f);
 			setStockQuotes.setCircleRadius(3f);
 			setStockQuotes.setDrawCircleHole(false);
@@ -154,7 +183,7 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 			setStockQuotes.setDrawFilled(true);
 			setStockQuotes.setFormLineWidth(1f);
 			setStockQuotes.setFillColor(Color.rgb(238, 247, 255));
-			setStockQuotes.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+			setStockQuotes.setMode(LineDataSet.Mode.LINEAR);
 
 			ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 			dataSets.add(setStockQuotes); // add the datasets

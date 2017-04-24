@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.udacity.stockhawk.ui.StockHistoryActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/toolbar_shadow_height"
+        app:contentInsetStartWithNavigation="@dimen/toolbar_title_left_padding">
+
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
@@ -13,4 +32,4 @@
         android:layout_height="match_parent"
         android:background="?attr/controlBackground"/>
 
-</FrameLayout>
+</LinearLayout>

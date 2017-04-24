@@ -84,14 +84,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         stockRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        });
+        swipeRefreshLayout.setRefreshing(true);
         onRefresh();
 
         QuoteSyncJob.initialize(this);
