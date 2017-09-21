@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -152,7 +153,7 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 	{
 		//TODO: setar os dados no gráfico
 
-		ArrayList<Entry> values = new ArrayList<Entry>();
+		ArrayList<Entry> entries = new ArrayList<Entry>();
 
 		if(cursor.moveToFirst())
 		{
@@ -168,10 +169,11 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 
 			for(int i = historyInWeeks.length - 1; i >= 0; i--)
 			{
-				values.add(new Entry(Float.valueOf((Long.valueOf(historyInWeeks[i].split(",")[0]) - referenceTimeStamp)), Float.valueOf(historyInWeeks[i].split(",")[1])));
+				entries.add(new Entry(Float.valueOf((referenceTimeStamp - Long.valueOf(historyInWeeks[i].split(",")[0]))),
+						  Float.valueOf(historyInWeeks[i].split(",")[1])));
 			}
 
-			LineDataSet setStockQuotes = new LineDataSet(values, "Stock Quotes");
+			LineDataSet setStockQuotes = new LineDataSet(entries, "Stock Quotes");
 
 			setStockQuotes.setColor(Color.WHITE);
 			setStockQuotes.setCircleColor(Color.WHITE);
@@ -195,6 +197,7 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 
 			// set data
 			mChart.setData(data);
+			mChart.invalidate();
 		}
 	}
 
