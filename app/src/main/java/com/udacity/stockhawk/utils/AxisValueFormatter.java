@@ -8,6 +8,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,12 +22,15 @@ public class AxisValueFormatter implements IAxisValueFormatter
     private DateFormat mDataFormat;
     private Date mDate;
     private Context context;
+    ArrayList<String> xValues = new ArrayList<String>();
 
-    public AxisValueFormatter(long referenceTimestamp, Context context) {
+
+    public AxisValueFormatter(long referenceTimestamp, Context context, ArrayList<String> xValues) {
         this.referenceTimestamp = referenceTimestamp;
         this.mDataFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.mDate = new Date();
         this.context = context;
+        this.xValues = xValues;
     }
 
 
@@ -40,17 +44,19 @@ public class AxisValueFormatter implements IAxisValueFormatter
      * @return
      */
     @Override
-    public String getFormattedValue(float value, AxisBase axis) {
-        long convertedTimestamp = (long) value;
-
-        // Pega o timestamp original
-        long originalTimestamp = referenceTimestamp + convertedTimestamp;
-
-        // Converte timestamp para hora:minuto
-        //return getHour(originalTimestamp);
-
-        // Converte timestamp para dia/mes/ano
-        return getDate(originalTimestamp);
+    public String getFormattedValue(float value, AxisBase axis)
+    {
+        return xValues.get((int) value % xValues.size());
+//        long convertedTimestamp = (long) value;
+//
+//        // Pega o timestamp original
+//        long originalTimestamp = referenceTimestamp - convertedTimestamp;
+//
+//        // Converte timestamp para hora:minuto
+//        //return getHour(originalTimestamp);
+//
+//        // Converte timestamp para dia/mes/ano
+//        return getDate(originalTimestamp);
     }
 
     private String getHour(long timestamp){

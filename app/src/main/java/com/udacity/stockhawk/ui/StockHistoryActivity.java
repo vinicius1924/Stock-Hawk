@@ -17,10 +17,12 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
@@ -31,7 +33,12 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.utils.AxisValueFormatter;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -154,6 +161,7 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 		//TODO: setar os dados no gráfico
 
 		ArrayList<Entry> entries = new ArrayList<Entry>();
+		ArrayList<String> xValues = new ArrayList<String>();
 
 		if(cursor.moveToFirst())
 		{
@@ -162,16 +170,24 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 
 			String historyInWeeks[] = history.split("\\r?\\n");
 
+			for(int i = 0; i < historyInWeeks.length; i++)
+			{
+				Log.d("StocksHistory", historyInWeeks[i]);
+			}
+
 			long referenceTimeStamp = Long.valueOf(historyInWeeks[historyInWeeks.length - 1].split(",")[0]);
 
 			// set a custom value formatter
-			xAxis.setValueFormatter(new AxisValueFormatter(referenceTimeStamp, this));
+			//xAxis.setValueFormatter(new AxisValueFormatter(referenceTimeStamp, this));
 
-			for(int i = historyInWeeks.length - 1; i >= 0; i--)
+			for(int i = 0; i < historyInWeeks.length; i++)
 			{
-				entries.add(new Entry(Float.valueOf((referenceTimeStamp - Long.valueOf(historyInWeeks[i].split(",")[0]))),
+				xValues.add(getDate(Long.valueOf(historyInWeeks[i].split(",")[0])));
+				entries.add(new Entry(i/*Float.valueOf((referenceTimeStamp - Long.valueOf(historyInWeeks[i].split(",")[0])))*/,
 						  Float.valueOf(historyInWeeks[i].split(",")[1])));
 			}
+
+			xAxis.setValueFormatter(new AxisValueFormatter(referenceTimeStamp, this, xValues));
 
 			LineDataSet setStockQuotes = new LineDataSet(entries, "Stock Quotes");
 
@@ -199,6 +215,33 @@ public class StockHistoryActivity extends AppCompatActivity implements LoaderMan
 			mChart.setData(data);
 			mChart.invalidate();
 		}
+	}
+
+	/**
+	 * Retorna a data de acordo com a linguagem do dispositivo
+	 */
+	private String getDate(long timestamp)
+	{
+		DateFormat mDataFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date mDate = new Date();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(timestamp);
+
+		try
+		{
+			mDate = mDataFormat.parse(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(calendar.get(Calendar.MONTH))
+					  + "/" + String.valueOf(calendar.get(Calendar.YEAR)));
+		}
+		catch(ParseException e)
+		{
+			e.printStackTrace();
+		}
+
+		java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+		String s = dateFormat.format(mDate);
+
+		return s;
 	}
 
 	@Override
