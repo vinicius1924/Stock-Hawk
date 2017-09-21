@@ -29,6 +29,6 @@ Open Android Studio and click: File -> Open and choose the build.gradle file ins
 ![Stock Details](/images/stock_details.png)
 ![Add New Stock](/images/add_new_stock.png)
 
-###Widget
+### Widget
 
 ![Widget](/images/widget.png)
